@@ -10,6 +10,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/apex/gateway"
 	"github.com/vkuznecovas/mouthful/global"
 
 	"github.com/fatih/color"
@@ -29,6 +30,8 @@ func main() {
 	}
 
 	configFlag := flag.String("config", "./data/config.json", "File to read configuration")
+	lambdaFlag := flag.Bool("l", false, "Run as lambda")
+	lambdaFlagLong := flag.Bool("lambda", false, "Run as lambda")
 	helpFlag := flag.Bool("h", false, "Show help")
 	helpFlagLong := flag.Bool("help", false, "Show help")
 	flag.Parse()
@@ -99,7 +102,12 @@ func main() {
 	color.Set(color.FgGreen)
 	log.Println("Running mouthful server on ", fullAddress)
 	color.Unset()
-	service.Run(fullAddress)
+
+	if *lambdaFlag || *lambdaFlagLong {
+		log.Fatal(gateway.ListenAndServe(":"+os.Getenv("PORT"), service))
+	} else {
+		service.Run(fullAddress)
+	}
 }
 
 func howto() {

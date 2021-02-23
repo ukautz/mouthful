@@ -3,7 +3,9 @@ module github.com/vkuznecovas/mouthful
 go 1.14
 
 require (
+	github.com/apex/gateway v1.1.2
 	github.com/appleboy/gofight v2.0.0+incompatible
+	github.com/aws/aws-lambda-go v1.22.0
 	github.com/aws/aws-sdk-go v1.34.31
 	github.com/buger/jsonparser v1.1.1 // indirect
 	github.com/fatih/color v1.9.0
