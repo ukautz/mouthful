@@ -1,8 +1,10 @@
 FROM golang:1.15.2-alpine
 ARG MOUTHFUL_VER
+ARG DISABLE_UPX
 ENV CGO_ENABLED=${CGO_ENABLED:-1} \
     GOOS=${GOOS:-linux} \
     MOUTHFUL_VER=${MOUTHFUL_VER:-master}
+    DISABLE_UPX=${DISABLE_UPX:-0}
 RUN set -ex; \
     apk add --no-cache bash build-base curl git && \
     echo "http://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories && \
@@ -12,8 +14,9 @@ RUN set -ex; \
 WORKDIR /go/src/github.com/vkuznecovas/mouthful
 RUN git checkout $MOUTHFUL_VER && \
     ./build.sh && \
-    cd dist/ && \
-    upx --best mouthful
+    if [ $DISABLE_UPX -lt 1 ]; then \
+        cd dist/ && upx --best mouthful; \
+    fi
 
 FROM alpine:3.7
 COPY --from=0 /go/src/github.com/vkuznecovas/mouthful/dist/ /app/
